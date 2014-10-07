@@ -10,4 +10,7 @@ public class Empty extends Cons {
     public String toString() {
         return "empty";
     }
+    boolean isEmpty() {
+        return true;
+    }
 }

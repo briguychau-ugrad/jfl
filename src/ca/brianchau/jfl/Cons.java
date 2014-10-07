@@ -14,7 +14,7 @@ public class Cons extends Value<Value> {
         return "(Cons " + t + " " + c + ")";
     }
     boolean isEmpty() {
-        return (c == null);
+        return false;
     }
     Cons next() {
         return c;
