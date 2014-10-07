@@ -77,7 +77,7 @@ public class Util {
     }
 
     // List
-    public static final Cons EMPTY = new Cons(null, null);
+    public static final Cons EMPTY = new Empty();
     public static Bool isEmpty(Lambda l) {
         if (l instanceof Cons) {
             return Bool(((Cons) l).isEmpty());

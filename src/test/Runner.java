@@ -19,5 +19,6 @@ public class Runner {
         print(sumList.eval(list1));
         print(factorial.eval(Int(10)));
         print(factorial.eval(getInt()));
+        print(list1);
     }
 }
