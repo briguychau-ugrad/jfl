@@ -25,6 +25,9 @@ public class Runner {
 
         println(map.apply(mul2).apply(list1));
 
+        println(buildList.apply(Int(10)).apply(identity));
+        println(buildList.apply(Int(10)).apply(x -> Lambda(y -> mul.apply(y).apply(y)).apply(x)));
+
         println(sumList.apply(list1));
         println(factorial.apply(Int(10)));
         println(list1);

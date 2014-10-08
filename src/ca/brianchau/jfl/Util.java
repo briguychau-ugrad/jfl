@@ -39,11 +39,73 @@ public class Util {
         }
         return c;
     }
+    public static Lambda Lambda(Lambda l) {
+        return l;
+    }
+
+    // Operators
+    public static Lambda identity = a -> a;
 
     // Boolean operators
-    public static Lambda equal = a -> b -> {
-        return a.equals(b) ? TRUE : FALSE;
+    public static Lambda and = a -> b -> {
+        if (a instanceof Bool && b instanceof Bool) {
+            return Bool(((Bool) a).value() && ((Bool) b).value());
+        }
+        throw new JFLException("Unable to compare these values.");
     };
+    public static Lambda or = a -> b -> {
+        if (a instanceof Bool && b instanceof Bool) {
+            return Bool(((Bool) a).value() || ((Bool) b).value());
+        }
+        throw new JFLException("Unable to compare these values.");
+    };
+    public static Lambda xor = a -> b -> {
+        if (a instanceof Bool && b instanceof Bool) {
+            return Bool(((Bool) a).value() ^ ((Bool) b).value());
+        }
+        throw new JFLException("Unable to compare these values.");
+    };
+    public static Lambda not = l -> {
+        if (l instanceof Bool) {
+            return l.equals(TRUE) ? FALSE : TRUE;
+        }
+        throw new JFLException("Unable to compare these values.");
+    };
+    public static Lambda eq = a -> b -> a.equals(b) ? TRUE : FALSE;
+    public static Lambda lt = a -> b -> {
+        if (a instanceof Flt) {
+            if (b instanceof Flt) {
+                return Bool(((Flt) a).value() < ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Bool(((Flt) a).value() < ((Int) b).value());
+            }
+        } else if (a instanceof Int) {
+            if (b instanceof Flt) {
+                return Bool(((Int) a).value() < ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Bool(((Int) a).value() < ((Int) b).value());
+            }
+        }
+        throw new JFLException("Unable to compare these values.");
+    };
+    public static Lambda gt = a -> b -> {
+        if (a instanceof Flt) {
+            if (b instanceof Flt) {
+                return Bool(((Flt) a).value() > ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Bool(((Flt) a).value() > ((Int) b).value());
+            }
+        } else if (a instanceof Int) {
+            if (b instanceof Flt) {
+                return Bool(((Int) a).value() > ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Bool(((Int) a).value() > ((Int) b).value());
+            }
+        }
+        throw new JFLException("Unable to compare these values.");
+    };
+    public static Lambda lte = a -> b -> not.apply(gt.apply(a).apply(b));
+    public static Lambda gte = a -> b -> not.apply(lt.apply(a).apply(b));
 
     // Math Functions
     public static Lambda add = a -> b -> {
@@ -132,13 +194,13 @@ public class Util {
     };
     public static Lambda isOdd = l -> {
         if (l instanceof Int) {
-            return equal.apply(Int(1)).apply(mod.apply(l).apply(Int(2)));
+            return eq.apply(Int(1)).apply(mod.apply(l).apply(Int(2)));
         }
         throw new JFLException("Unable to determine oddness of non-Int value.");
     };
     public static Lambda isEven = l -> {
         if (l instanceof Int) {
-            return equal.apply(Int(0)).apply(mod.apply(l).apply(Int(2)));
+            return eq.apply(Int(0)).apply(mod.apply(l).apply(Int(2)));
         }
         throw new JFLException("Unable to determine oddness of non-Int value.");
     };
@@ -197,6 +259,7 @@ public class Util {
     public static Lambda foldl = Fix.apply(foldl -> f -> b -> l -> cond(isEmpty(l)) ? b : foldl.apply(f).apply(f.apply(first(l)).apply(b)).apply(rest(l)));
     public static Lambda map = Fix.apply(map -> f -> l -> cond(isEmpty(l)) ? EMPTY : Cons(f.apply(first(l)), (Cons)map.apply(f).apply(rest(l))));
     public static Lambda filter = Fix.apply(filter -> p -> l -> cond(isEmpty(l)) ? EMPTY : cond(p.apply(first(l))) ? Cons(first(l), (Cons)filter.apply(p).apply(rest(l))) : filter.apply(p).apply(rest(l)));
+    public static Lambda buildList = n -> f -> Fix.apply(blx -> nx -> ax -> cond(isZero(nx)) ? Cons(f.apply(Int(0)), (Cons)ax) : blx.apply(sub1.apply(nx)).apply(Cons(f.apply(nx), (Cons)ax))).apply(sub1.apply(n)).apply(EMPTY);
 
     // Input/Output
     public static Int getInt() {
