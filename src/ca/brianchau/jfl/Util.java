@@ -17,6 +17,9 @@ public class Util {
     public static final Cons EMPTY = new Empty();
 
     // Constructors
+    public static Str Str(String s) {
+        return new Str(s);
+    }
     public static Int Int(int i) {
         return new Int(i);
     }
@@ -273,6 +276,12 @@ public class Util {
             return new Flt(s.nextDouble());
         }
         throw new JFLException("Unable to read Flt from System.in.");
+    }
+    public static Str getStr() {
+        if (s.hasNext())  {
+            return new Str(s.next());
+        }
+        throw new JFLException("Unable to read Str from System.in.");
     }
     public static Lambda println(Lambda l) {
         print(l);
