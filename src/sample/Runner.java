@@ -15,6 +15,8 @@ public class Runner {
         Lambda list1 = Cons(Int(1), Cons(Int(2), Cons(Int(3), Cons(Int(4), EMPTY))));
 
         println(foldr.apply(add).apply(Int(0)).apply(list1));
+        println(foldr.apply(cons).apply(EMPTY).apply(list1));
+        println(foldl.apply(cons).apply(EMPTY).apply(list1));
 
         /*println(sumList.apply(list1));
         println(factorial.apply(Int(10)));
