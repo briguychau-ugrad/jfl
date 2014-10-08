@@ -12,11 +12,13 @@ public class Runner {
 
         Lambda sumListHelper = Fix.apply(f -> l -> a -> (cond(isEmpty(l)) ? a : f.apply(rest(l)).apply(add.apply(a).apply(first(l)))));
         Lambda sumList = l -> sumListHelper.apply(l).apply(Int(0));
-        Lambda list1 = Cons(Int(1), Cons(Int(2), Cons(Int(3), EMPTY)));
+        Lambda list1 = Cons(Int(1), Cons(Int(2), Cons(Int(3), Cons(Int(4), EMPTY))));
 
-        println(sumList.apply(list1));
+        println(foldr.apply(add).apply(Int(0)).apply(list1));
+
+        /*println(sumList.apply(list1));
         println(factorial.apply(Int(10)));
         println(factorial.apply(getInt()));
-        println(list1);
+        println(list1);*/
     }
 }

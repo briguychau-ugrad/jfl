@@ -3,10 +3,10 @@ package ca.brianchau.jfl;
 /**
  * Created by brian on 2014-10-06.
  */
-public class Cons extends Value<Value> {
+public class Cons extends Value<Lambda> {
     private Cons c;
-    Cons(Value v, Cons c) {
-        super(v);
+    Cons(Lambda l, Cons c) {
+        super(l);
         this.c = c;
     }
     @Override

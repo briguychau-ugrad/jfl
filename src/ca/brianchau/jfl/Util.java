@@ -9,7 +9,7 @@ public class Util {
 
     public static Scanner s = new Scanner(System.in);
 
-    // Functional Constructors
+    // Constructors
     public static Int Int(int i) {
         return new Int(i);
     }
@@ -22,12 +22,12 @@ public class Util {
     public static Bool Bool(boolean b) {
         return new Bool(b);
     }
-    public static Cons Cons(Value v, Cons c) {
-        return new Cons(v, c);
+    public static Cons Cons(Lambda l, Cons c) {
+        return new Cons(l, c);
     }
 
     // Math Functions
-    public static Lambda add = (a) -> (b) -> {
+    public static Lambda add = a -> b -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
                 return Flt(((Flt) a).value() + ((Flt) b).value());
@@ -43,7 +43,7 @@ public class Util {
         }
         throw new JFLException("Unable to add non-numerical values.");
     };
-    public static Lambda sub = (a) -> (b) -> {
+    public static Lambda sub = a -> b -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
                 return Flt(((Flt) a).value() - ((Flt) b).value());
@@ -59,7 +59,7 @@ public class Util {
         }
         throw new JFLException("Unable to subtract non-numerical values.");
     };
-    public static Lambda mul = (a) -> (b) -> {
+    public static Lambda mul = a -> b -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
                 return Flt(((Flt) a).value() * ((Flt) b).value());
@@ -80,6 +80,12 @@ public class Util {
 
     // List
     public static final Cons EMPTY = new Empty();
+    public static Lambda cons = l -> c -> {
+        if (c instanceof Cons) {
+            return Cons(l, (Cons)c);
+        }
+        throw new JFLException("Unable to cons to a non-Cons.");
+    };
     public static Bool isEmpty(Lambda l) {
         if (l instanceof Cons) {
             return Bool(((Cons) l).isEmpty());
@@ -100,9 +106,9 @@ public class Util {
     }
 
     // Conditional
-    public static boolean cond(Lambda i) {
-        if (i instanceof Bool) {
-            return ((Bool) i).value();
+    public static boolean cond(Lambda l) {
+        if (l instanceof Bool) {
+            return ((Bool) l).value();
         }
         throw new JFLException("Unable to evaluate cond statement on a non-bool operation.");
     }
@@ -119,6 +125,9 @@ public class Util {
         }
         return Bool(false);
     }
+
+    // Higher order functions
+    public static Lambda foldr = Fix.apply(fold -> f -> b -> l -> cond(isEmpty(l)) ? b : f.apply(first(l)).apply(fold.apply(f).apply(b).apply(rest(l))));
 
     // Input/Output
     public static Int getInt() {
@@ -137,7 +146,6 @@ public class Util {
         System.out.println(l.toString());
         return l;
     }
-
     public static Lambda print(Lambda l) {
         System.out.print(l.toString());
         return l;
