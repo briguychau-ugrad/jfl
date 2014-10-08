@@ -27,7 +27,7 @@ public class Util {
     }
 
     // Math Functions
-    public static Lambda add(Lambda a, Lambda b) {
+    public static Lambda add = (a) -> (b) -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
                 return Flt(((Flt) a).value() + ((Flt) b).value());
@@ -42,8 +42,8 @@ public class Util {
             }
         }
         throw new JFLException("Unable to add non-numerical values.");
-    }
-    public static Lambda sub(Lambda a, Lambda b) {
+    };
+    public static Lambda sub = (a) -> (b) -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
                 return Flt(((Flt) a).value() - ((Flt) b).value());
@@ -58,8 +58,8 @@ public class Util {
             }
         }
         throw new JFLException("Unable to subtract non-numerical values.");
-    }
-    public static Lambda mul(Lambda a, Lambda b) {
+    };
+    public static Lambda mul = (a) -> (b) -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
                 return Flt(((Flt) a).value() * ((Flt) b).value());
@@ -74,7 +74,9 @@ public class Util {
             }
         }
         throw new JFLException("Unable to multiply non-numerical values.");
-    }
+    };
+    public static Lambda add1 = add.apply(Int(1));
+    public static Lambda sub1 = add.apply(Int(-1));
 
     // List
     public static final Cons EMPTY = new Empty();
@@ -97,17 +99,17 @@ public class Util {
         throw new JFLException("Unable to evaluate rest on a non-list.");
     }
 
-    // Conditional operations
-    public static boolean If(Lambda i) {
+    // Conditional
+    public static boolean cond(Lambda i) {
         if (i instanceof Bool) {
             return ((Bool) i).value();
         }
-        throw new JFLException("Unable to evaluate If statement on a non-bool operation.");
+        throw new JFLException("Unable to evaluate cond statement on a non-bool operation.");
     }
 
     // Recursion
-    private static Lambda selfApply = f -> f.eval(f);
-    public static Lambda Fix = f -> selfApply.eval(w -> f.eval(x -> w.eval(w).eval(x)));
+    private static Lambda selfApply = f -> f.apply(f);
+    public static Lambda Fix = f -> selfApply.apply(w -> f.apply(x -> w.apply(w).apply(x)));
 
     public static Bool isZero(Lambda l) {
         if (l instanceof Int) {
