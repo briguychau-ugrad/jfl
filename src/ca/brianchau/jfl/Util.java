@@ -120,21 +120,26 @@ public class Util {
         return Bool(false);
     }
 
+    // Input/Output
     public static Int getInt() {
         if (s.hasNextLong()) {
             return new Int(s.nextLong());
         }
         throw new JFLException("Unable to read Int from System.in.");
     }
-
     public static Flt getFlt() {
         if (s.hasNextDouble()) {
             return new Flt(s.nextDouble());
         }
         throw new JFLException("Unable to read Flt from System.in.");
     }
-
-    public static void print(Lambda l) {
+    public static Lambda println(Lambda l) {
         System.out.println(l.toString());
+        return l;
+    }
+
+    public static Lambda print(Lambda l) {
+        System.out.print(l.toString());
+        return l;
     }
 }

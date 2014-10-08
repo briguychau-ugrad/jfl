@@ -14,9 +14,9 @@ public class Runner {
         Lambda sumList = l -> sumListHelper.apply(l).apply(Int(0));
         Lambda list1 = Cons(Int(1), Cons(Int(2), Cons(Int(3), EMPTY)));
 
-        print(sumList.apply(list1));
-        print(factorial.apply(Int(10)));
-        print(factorial.apply(getInt()));
-        print(list1);
+        println(sumList.apply(list1));
+        println(factorial.apply(Int(10)));
+        println(factorial.apply(getInt()));
+        println(list1);
     }
 }
