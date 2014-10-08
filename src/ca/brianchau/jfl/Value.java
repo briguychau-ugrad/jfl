@@ -23,6 +23,7 @@ public abstract class Value<T> implements Lambda {
             return true;
         if (!(o instanceof Value))
             return false;
-        return ((Value) o).value().equals(t);
+        Value v = (Value)o;
+        return (null == t) ? (null == v.t) : t.equals(v.t);
     }
 }

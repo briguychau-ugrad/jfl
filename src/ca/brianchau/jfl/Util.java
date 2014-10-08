@@ -7,9 +7,14 @@ import java.util.Scanner;
  */
 public class Util {
 
-    public static boolean USE_CONS_FOR_LIST = true;
+    public static boolean USE_CONS_FOR_LIST = false;
 
     public static Scanner s = new Scanner(System.in);
+
+    // Static objects
+    public static final Bool TRUE = new Bool(true);
+    public static final Bool FALSE = new Bool(false);
+    public static final Cons EMPTY = new Empty();
 
     // Constructors
     public static Int Int(int i) {
@@ -34,6 +39,11 @@ public class Util {
         }
         return c;
     }
+
+    // Boolean operators
+    public static Lambda equal = a -> b -> {
+        return a.equals(b) ? TRUE : FALSE;
+    };
 
     // Math Functions
     public static Lambda add = a -> b -> {
@@ -84,11 +94,58 @@ public class Util {
         }
         throw new JFLException("Unable to multiply non-numerical values.");
     };
+    public static Lambda div = a -> b -> {
+        if (isZero(b).value()) {
+            throw new JFLException("/ by 0 not allowed.");
+        } else if (a instanceof Flt) {
+            if (b instanceof Flt) {
+                return Flt(((Flt) a).value() / ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Flt(((Flt) a).value() / ((Int) b).value());
+            }
+        } else if (a instanceof Int) {
+            if (b instanceof Flt) {
+                return Flt(((Int) a).value() / ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Int(((Int) a).value() / ((Int) b).value());
+            }
+        }
+        throw new JFLException("Unable to divide non-numerical values.");
+    };
+    public static Lambda mod = a -> b -> {
+        if (isZero(b).value()) {
+            throw new JFLException("% by 0 not allowed.");
+        } else if (a instanceof Flt) {
+            if (b instanceof Flt) {
+                return Flt(((Flt) a).value() % ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Flt(((Flt) a).value() % ((Int) b).value());
+            }
+        } else if (a instanceof Int) {
+            if (b instanceof Flt) {
+                return Flt(((Int) a).value() % ((Flt) b).value());
+            } else if (b instanceof Int) {
+                return Int(((Int) a).value() % ((Int) b).value());
+            }
+        }
+        throw new JFLException("Unable to modulo non-numeric values.");
+    };
+    public static Lambda isOdd = l -> {
+        if (l instanceof Int) {
+            return equal.apply(Int(1)).apply(mod.apply(l).apply(Int(2)));
+        }
+        throw new JFLException("Unable to determine oddness of non-Int value.");
+    };
+    public static Lambda isEven = l -> {
+        if (l instanceof Int) {
+            return equal.apply(Int(0)).apply(mod.apply(l).apply(Int(2)));
+        }
+        throw new JFLException("Unable to determine oddness of non-Int value.");
+    };
     public static Lambda add1 = add.apply(Int(1));
     public static Lambda sub1 = add.apply(Int(-1));
 
     // List
-    public static final Cons EMPTY = new Empty();
     public static Lambda cons = l -> c -> {
         if (c instanceof Cons) {
             return Cons(l, (Cons)c);
@@ -139,6 +196,7 @@ public class Util {
     public static Lambda foldr = Fix.apply(foldr -> f -> b -> l -> cond(isEmpty(l)) ? b : f.apply(first(l)).apply(foldr.apply(f).apply(b).apply(rest(l))));
     public static Lambda foldl = Fix.apply(foldl -> f -> b -> l -> cond(isEmpty(l)) ? b : foldl.apply(f).apply(f.apply(first(l)).apply(b)).apply(rest(l)));
     public static Lambda map = Fix.apply(map -> f -> l -> cond(isEmpty(l)) ? EMPTY : Cons(f.apply(first(l)), (Cons)map.apply(f).apply(rest(l))));
+    public static Lambda filter = Fix.apply(filter -> p -> l -> cond(isEmpty(l)) ? EMPTY : cond(p.apply(first(l))) ? Cons(first(l), (Cons)filter.apply(p).apply(rest(l))) : filter.apply(p).apply(rest(l)));
 
     // Input/Output
     public static Int getInt() {
