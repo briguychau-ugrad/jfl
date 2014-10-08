@@ -8,9 +8,9 @@ import ca.brianchau.jfl.*;
  */
 public class Runner {
     public static void main(String[] args) {
-        Lambda factorial = Fix.apply(f -> n -> (cond(isZero(n))) ? Int(1) : mul.apply(n).apply(f.apply(sub1.apply(n))));
+        Lambda factorial = Fix.apply(f -> n -> cond(isZero(n)) ? Int(1) : mul.apply(n).apply(f.apply(sub1.apply(n))));
 
-        Lambda sumListHelper = Fix.apply(f -> l -> a -> (cond(isEmpty(l)) ? a : f.apply(rest(l)).apply(add.apply(a).apply(first(l)))));
+        Lambda sumListHelper = Fix.apply(f -> l -> a -> cond(isEmpty(l)) ? a : f.apply(rest(l)).apply(add.apply(a).apply(first(l))));
         Lambda sumList = l -> sumListHelper.apply(l).apply(Int(0));
         Lambda list1 = Cons(Int(1), Cons(Int(2), Cons(Int(3), Cons(Int(4), EMPTY))));
 
@@ -18,9 +18,8 @@ public class Runner {
         println(foldr.apply(cons).apply(EMPTY).apply(list1));
         println(foldl.apply(cons).apply(EMPTY).apply(list1));
 
-        /*println(sumList.apply(list1));
+        println(sumList.apply(list1));
         println(factorial.apply(Int(10)));
-        println(factorial.apply(getInt()));
-        println(list1);*/
+        println(list1);
     }
 }
