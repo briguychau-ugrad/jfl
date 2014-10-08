@@ -129,6 +129,7 @@ public class Util {
     // Higher order functions
     public static Lambda foldr = Fix.apply(fold -> f -> b -> l -> cond(isEmpty(l)) ? b : f.apply(first(l)).apply(fold.apply(f).apply(b).apply(rest(l))));
     public static Lambda foldl = Fix.apply(fold -> f -> b -> l -> cond(isEmpty(l)) ? b : fold.apply(f).apply(f.apply(first(l)).apply(b)).apply(rest(l)));
+    public static Lambda map = Fix.apply(map -> f -> l -> cond(isEmpty(l)) ? EMPTY : Cons(f.apply(first(l)), (Cons)map.apply(f).apply(rest(l))));
 
     // Input/Output
     public static Int getInt() {

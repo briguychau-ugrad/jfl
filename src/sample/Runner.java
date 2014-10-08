@@ -18,6 +18,10 @@ public class Runner {
         println(foldr.apply(cons).apply(EMPTY).apply(list1));
         println(foldl.apply(cons).apply(EMPTY).apply(list1));
 
+        Lambda mul2 = mul.apply(Int(2));
+
+        println(map.apply(mul2).apply(list1));
+
         println(sumList.apply(list1));
         println(factorial.apply(Int(10)));
         println(list1);
