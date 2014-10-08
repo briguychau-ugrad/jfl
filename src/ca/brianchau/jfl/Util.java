@@ -7,6 +7,8 @@ import java.util.Scanner;
  */
 public class Util {
 
+    public static boolean USE_CONS_FOR_LIST = true;
+
     public static Scanner s = new Scanner(System.in);
 
     // Constructors
@@ -24,6 +26,13 @@ public class Util {
     }
     public static Cons Cons(Lambda l, Cons c) {
         return new Cons(l, c);
+    }
+    public static Cons List(Lambda ... ls) {
+        Cons c = EMPTY;
+        for (int i = ls.length - 1; i >= 0; --i) {
+            c = Cons(ls[i], c);
+        }
+        return c;
     }
 
     // Math Functions
@@ -127,8 +136,8 @@ public class Util {
     }
 
     // Higher order functions
-    public static Lambda foldr = Fix.apply(fold -> f -> b -> l -> cond(isEmpty(l)) ? b : f.apply(first(l)).apply(fold.apply(f).apply(b).apply(rest(l))));
-    public static Lambda foldl = Fix.apply(fold -> f -> b -> l -> cond(isEmpty(l)) ? b : fold.apply(f).apply(f.apply(first(l)).apply(b)).apply(rest(l)));
+    public static Lambda foldr = Fix.apply(foldr -> f -> b -> l -> cond(isEmpty(l)) ? b : f.apply(first(l)).apply(foldr.apply(f).apply(b).apply(rest(l))));
+    public static Lambda foldl = Fix.apply(foldl -> f -> b -> l -> cond(isEmpty(l)) ? b : foldl.apply(f).apply(f.apply(first(l)).apply(b)).apply(rest(l)));
     public static Lambda map = Fix.apply(map -> f -> l -> cond(isEmpty(l)) ? EMPTY : Cons(f.apply(first(l)), (Cons)map.apply(f).apply(rest(l))));
 
     // Input/Output
@@ -145,11 +154,22 @@ public class Util {
         throw new JFLException("Unable to read Flt from System.in.");
     }
     public static Lambda println(Lambda l) {
-        System.out.println(l.toString());
+        print(l);
+        System.out.println();
         return l;
     }
     public static Lambda print(Lambda l) {
-        System.out.print(l.toString());
+        if (!USE_CONS_FOR_LIST && l instanceof Cons) {
+            System.out.print("(List");
+            Cons c = (Cons)l;
+            while (!isEmpty(c).value()) {
+                System.out.print(" " + c.value().toString());
+                c = c.next();
+            }
+            System.out.print(")");
+        } else {
+            System.out.print(l.toString());
+        }
         return l;
     }
 }
