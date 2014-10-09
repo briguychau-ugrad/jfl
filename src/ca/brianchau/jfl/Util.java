@@ -20,6 +20,9 @@ public class Util {
     public static Str Str(String s) {
         return new Str(s);
     }
+    public static Str Str(Lambda l) {
+        return new Str(l.toString());
+    }
     public static Int Int(int i) {
         return new Int(i);
     }
@@ -46,10 +49,10 @@ public class Util {
         return l;
     }
 
-    // Operators
+    // Identity operation
     public static Lambda identity = a -> a;
 
-    // Boolean operators
+    // Boolean operations
     public static Lambda and = a -> b -> {
         if (a instanceof Bool && b instanceof Bool) {
             return Bool(((Bool) a).value() && ((Bool) b).value());
@@ -74,6 +77,8 @@ public class Util {
         }
         throw new JFLException("Unable to compare these values.");
     };
+
+    // Comparison operations
     public static Lambda eq = a -> b -> a.equals(b) ? TRUE : FALSE;
     public static Lambda lt = a -> b -> {
         if (a instanceof Flt) {
@@ -110,7 +115,7 @@ public class Util {
     public static Lambda lte = a -> b -> not.apply(gt.apply(a).apply(b));
     public static Lambda gte = a -> b -> not.apply(lt.apply(a).apply(b));
 
-    // Math Functions
+    // Math operations
     public static Lambda add = a -> b -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
@@ -207,10 +212,23 @@ public class Util {
         }
         throw new JFLException("Unable to determine oddness of non-Int value.");
     };
+    public static Lambda isZero = l -> {
+        if (l instanceof Int) {
+            return Bool(((Int) l).value() == 0L);
+        } else if (l instanceof Flt) {
+            return Bool(((Flt) l).value() == 0.0);
+        }
+        return Bool(false);
+    };
     public static Lambda add1 = add.apply(Int(1));
     public static Lambda sub1 = add.apply(Int(-1));
 
-    // List
+    // String operations
+    public static Lambda concat = a -> b -> {
+        return Str(a.toString() + b.toString());
+    };
+
+    // List operations
     public static Lambda cons = l -> c -> {
         if (c instanceof Cons) {
             return Cons(l, (Cons)c);
@@ -247,15 +265,6 @@ public class Util {
     // Recursion
     private static Lambda selfApply = f -> f.apply(f);
     public static Lambda Fix = f -> selfApply.apply(w -> f.apply(x -> w.apply(w).apply(x)));
-
-    public static Bool isZero(Lambda l) {
-        if (l instanceof Int) {
-            return Bool(((Int) l).value() == 0L);
-        } else if (l instanceof Flt) {
-            return Bool(((Flt) l).value() == 0.0);
-        }
-        return Bool(false);
-    }
 
     // Higher order functions
     public static Lambda foldr = Fix.apply(foldr -> f -> b -> l -> cond(isEmpty(l)) ? b : f.apply(first(l)).apply(foldr.apply(f).apply(b).apply(rest(l))));
