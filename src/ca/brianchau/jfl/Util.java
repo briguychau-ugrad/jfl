@@ -116,6 +116,14 @@ public class Util {
     public static Lambda gte = a -> b -> not.apply(lt.apply(a).apply(b));
 
     // Math operations
+    public static Lambda isZero = l -> {
+        if (l instanceof Int) {
+            return Bool(((Int) l).value() == 0L);
+        } else if (l instanceof Flt) {
+            return Bool(((Flt) l).value() == 0.0);
+        }
+        return Bool(false);
+    };
     public static Lambda add = a -> b -> {
         if (a instanceof Flt) {
             if (b instanceof Flt) {
@@ -165,7 +173,7 @@ public class Util {
         throw new JFLException("Unable to multiply non-numerical values.");
     };
     public static Lambda div = a -> b -> {
-        if (isZero(b).value()) {
+        if (((Bool)isZero.apply(b)).value()) {
             throw new JFLException("/ by 0 not allowed.");
         } else if (a instanceof Flt) {
             if (b instanceof Flt) {
@@ -183,7 +191,7 @@ public class Util {
         throw new JFLException("Unable to divide non-numerical values.");
     };
     public static Lambda mod = a -> b -> {
-        if (isZero(b).value()) {
+        if (((Bool)isZero.apply(b)).value()) {
             throw new JFLException("% by 0 not allowed.");
         } else if (a instanceof Flt) {
             if (b instanceof Flt) {
@@ -211,14 +219,6 @@ public class Util {
             return eq.apply(Int(0)).apply(mod.apply(l).apply(Int(2)));
         }
         throw new JFLException("Unable to determine oddness of non-Int value.");
-    };
-    public static Lambda isZero = l -> {
-        if (l instanceof Int) {
-            return Bool(((Int) l).value() == 0L);
-        } else if (l instanceof Flt) {
-            return Bool(((Flt) l).value() == 0.0);
-        }
-        return Bool(false);
     };
     public static Lambda add1 = add.apply(Int(1));
     public static Lambda sub1 = add.apply(Int(-1));
@@ -271,7 +271,7 @@ public class Util {
     public static Lambda foldl = Fix.apply(foldl -> f -> b -> l -> cond(isEmpty(l)) ? b : foldl.apply(f).apply(f.apply(first(l)).apply(b)).apply(rest(l)));
     public static Lambda map = Fix.apply(map -> f -> l -> cond(isEmpty(l)) ? EMPTY : Cons(f.apply(first(l)), (Cons)map.apply(f).apply(rest(l))));
     public static Lambda filter = Fix.apply(filter -> p -> l -> cond(isEmpty(l)) ? EMPTY : cond(p.apply(first(l))) ? Cons(first(l), (Cons)filter.apply(p).apply(rest(l))) : filter.apply(p).apply(rest(l)));
-    public static Lambda buildList = n -> f -> Fix.apply(blx -> nx -> ax -> cond(isZero(nx)) ? Cons(f.apply(Int(0)), (Cons)ax) : blx.apply(sub1.apply(nx)).apply(Cons(f.apply(nx), (Cons)ax))).apply(sub1.apply(n)).apply(EMPTY);
+    public static Lambda buildList = n -> f -> Fix.apply(blx -> nx -> ax -> cond(isZero.apply(nx)) ? Cons(f.apply(Int(0)), (Cons)ax) : blx.apply(sub1.apply(nx)).apply(Cons(f.apply(nx), (Cons)ax))).apply(sub1.apply(n)).apply(EMPTY);
 
     // Input/Output
     public static Int getInt() {
