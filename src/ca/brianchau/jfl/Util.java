@@ -11,6 +11,15 @@ public class Util {
 
     public static Scanner s = new Scanner(System.in);
 
+    // Function evaluation
+    public static Lambda eval(Lambda f, Lambda ... args) {
+        Lambda l = f;
+        for (Lambda arg : args) {
+            l = l.apply(arg);
+        }
+        return l;
+    }
+
     // Static objects
     public static final Bool TRUE = new Bool(true);
     public static final Bool FALSE = new Bool(false);
