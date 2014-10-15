@@ -276,11 +276,11 @@ public class Util {
     public static Lambda Fix = f -> selfApply.apply(w -> f.apply(x -> w.apply(w).apply(x)));
 
     // Higher order functions
-    public static Lambda foldr = Fix.apply(foldr -> f -> b -> l -> cond(isEmpty(l)) ? b : f.apply(first(l)).apply(foldr.apply(f).apply(b).apply(rest(l))));
-    public static Lambda foldl = Fix.apply(foldl -> f -> b -> l -> cond(isEmpty(l)) ? b : foldl.apply(f).apply(f.apply(first(l)).apply(b)).apply(rest(l)));
-    public static Lambda map = Fix.apply(map -> f -> l -> cond(isEmpty(l)) ? EMPTY : Cons(f.apply(first(l)), (Cons)map.apply(f).apply(rest(l))));
-    public static Lambda filter = Fix.apply(filter -> p -> l -> cond(isEmpty(l)) ? EMPTY : cond(p.apply(first(l))) ? Cons(first(l), (Cons)filter.apply(p).apply(rest(l))) : filter.apply(p).apply(rest(l)));
-    public static Lambda buildList = n -> f -> Fix.apply(blx -> nx -> ax -> cond(isZero.apply(nx)) ? Cons(f.apply(Int(0)), (Cons)ax) : blx.apply(sub1.apply(nx)).apply(Cons(f.apply(nx), (Cons)ax))).apply(sub1.apply(n)).apply(EMPTY);
+    public static Lambda foldr = Fix.apply(foldr -> f -> b -> l -> cond(isEmpty(l)) ? b : eval(f, first(l), eval(foldr, f, b, rest(l))));
+    public static Lambda foldl = Fix.apply(foldl -> f -> b -> l -> cond(isEmpty(l)) ? b : eval(foldl, f, eval(f, first(l), b), rest(l)));
+    public static Lambda map = Fix.apply(map -> f -> l -> cond(isEmpty(l)) ? EMPTY : Cons(eval(f, first(l)), (Cons)eval(map, f, rest(l))));
+    public static Lambda filter = Fix.apply(filter -> p -> l -> cond(isEmpty(l)) ? EMPTY : cond(eval(p, first(l))) ? Cons(first(l), (Cons)eval(filter, p, rest(l))) : eval(filter, p, rest(l)));
+    public static Lambda buildList = Fix.apply(buildList -> c -> n -> f -> cond(eval(gte, c, n)) ? EMPTY : Cons(eval(f, c), (Cons)eval(buildList, eval(add1, c), n, f))).apply(Int(0));
 
     // Input/Output
     public static Int getInt() {
