@@ -5,9 +5,9 @@ package ca.brianchau.jfl;
  */
 public class Int extends Num<Long> {
     Int(Long l) {
-        super(l);
+        super(l, true);
     }
     Int(Integer i) {
-        super(i.longValue());
+        super(i.longValue(), true);
     }
 }

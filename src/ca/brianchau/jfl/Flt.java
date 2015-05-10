@@ -5,6 +5,6 @@ package ca.brianchau.jfl;
  */
 public class Flt extends Num<Double> {
     Flt(Double d) {
-        super(d);
+        super(d, false);
     }
 }
